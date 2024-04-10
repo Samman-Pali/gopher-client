@@ -16,7 +16,11 @@ More on this at section 3.8 'Item type characters' found [here](https://www.rfc-
 
 ### How to Execute:
 
-Navigate to the directory where you have saved the gopher-client in your terminal. Then execute:
+Ensure you have the latest python version.
+
+Navigate to the directory where you have saved the gopher-client in your terminal. 
+
+Then execute:
 
 ```
 python gopher_client.py
