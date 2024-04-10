@@ -46,7 +46,7 @@ EX_REFS: Set[str] = set()
 # informational message in the server
 INFO_MESSAGE: List[str] = []
 
-FILE_SIZES: Dict[str, Optional[Dict[str, Union[str, int | None]]]] = {
+FILE_SIZES: Dict[str, Optional[Dict[str, Union[str, int, None]]]] = {
     "smallest_text_file": None,
     "largest_text_file": None,
     "smallest_binary_file": None,
