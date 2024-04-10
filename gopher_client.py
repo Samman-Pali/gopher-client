@@ -27,20 +27,8 @@ COURSE_TAG: str = "comp3310"
 # Item type characters - https://www.rfc-editor.org/rfc/rfc1436
 TXTFILE: str = "0"
 DIRECTORY: str = "1"
-CSO_PHONE: str = "2"
 ERROR: str = "3"
-BINHEX_MAC: str = "4"
-DOS_BINARY_ARCH: str = (
-    "5"  # must read until TCP closes - no period at EOF (.xxx extension?)
-)
-UNIX_UUEN: str = "6"
-INDEX_SEARCH: str = "7"
-TELNET: str = "8"
 BINARY: str = "9"  # must read until TCP closes - no period at EOF (.xxx extension?)
-REDUN_SERVER: str = "+"
-TN3270: str = "T"
-GIF: str = "g"
-IMG: str = "I"
 INFORMATION: str = "i"
 
 # doubly ended queue is efficient w popping items off
