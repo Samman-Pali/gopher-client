@@ -10,7 +10,6 @@ from collections import deque
 import textwrap
 
 # ANSI codes for colours and styles
-HEADER: str = "\033[95m"
 OKBLUE: str = "\033[94m"
 OKCYAN: str = "\033[96m"
 OKGREEN: str = "\033[92m"

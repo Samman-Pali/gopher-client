@@ -18,7 +18,7 @@ More on this at section 3.8 'Item type characters' found [here](https://www.rfc-
 
 Ensure you have the latest python version.
 
-Navigate to the directory where you have saved the gopher-client in your terminal. 
+Navigate to the directory where you have saved the gopher-client in your terminal.
 
 Then execute:
 
@@ -64,5 +64,5 @@ Shown above is a snippet of the initial TCP three-way handshake, followed by the
 
 ### Requirements
 
-You will need to execute my python script in a powershell to be able to view the styled/coloured print output. Although it is not necessary, without it, you will see a lot ANSI characters that make no sense to you.
+You may need to execute my python script in a powershell to be able to view the styled/coloured print output. Although it is not necessary, without it, you will see a lot ANSI characters that make no sense to you.
 Any terminal with ANSI enabled or working will be able to see the intended print style/colours.
