@@ -14,6 +14,16 @@ More on this at section 3.8 'Item type characters' found [here](https://www.rfc-
 
 ---
 
+### How to Execute:
+
+Navigate to the directory where you have saved the gopher-client in your terminal. Then execute:
+
+```
+python gopher_client.py
+```
+
+---
+
 ### Design Choices:
 
 In order to handle `Badly behaved pages` I had a collection of different approaches:
@@ -24,12 +34,9 @@ In order to handle `Badly behaved pages` I had a collection of different approac
 
 `Godot` - As per the file description, this file never comes - therefore, this was easily handled by the timeout setting of the socket.
 
-
 In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as 0 in the event of a timeout or size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
 
 ---
-
-
 
 ### Known Limitations/Bugs:
 
@@ -42,8 +49,6 @@ In order to exclude text/binary files that resulted in an error or some overflow
 * Since I've set the timeout to 10 seconds and max size to 1MB the crawling is slower than it could be - in order to improve this speed we can reduce the timeout buffer and the max size as needed.
 
 ---
-
-
 
 ### Wireshark Response:
 
