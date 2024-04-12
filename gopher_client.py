@@ -22,6 +22,7 @@ UNDERLINE: str = "\033[4m"
 HOST: str = "comp3310.ddns.net"
 PORT: int = 70
 COURSE_TAG: str = "comp3310"
+CRLF: str = b"\r\n"
 
 # Item type characters - https://www.rfc-editor.org/rfc/rfc1436
 TXTFILE: str = "0"
@@ -78,7 +79,7 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
     )
 
     # create request with CRLF and send thru socket
-    request = selector + b"\r\n"
+    request = selector + CRLF
     socket.send(request)
 
     file = socket.makefile()
@@ -250,7 +251,7 @@ def download_file(
     # create request, socket/connection and set socket timeout
     idx = selector.find("\\")
     selector = selector[:idx]
-    request = str.encode(selector) + b"\r\n"
+    request = str.encode(selector) + CRLF
     socket_obj = connect_to_server(HOST, PORT)
     socket_obj.settimeout(10)
     socket_obj.send(request)
@@ -282,11 +283,12 @@ def download_file(
     finally:
         socket_obj.close()
 
-    # handles issues to do with OS specific termination, there was an error where
-    # empty.txt was showing size of 3 bytes - this was the solution.
+    # handles issues to do with txtfile termination, gopher server
+    # seems to add its own newline following the text content then CRLF
     if file_type == "text":
-        if response.endswith(b".\r\n"):
-            response = response[:-3]
+        text_response = response.decode('utf-8')
+        cleaned_response = text_response.rstrip('\n.\r\n')
+        response = cleaned_response.encode('utf-8')
 
     file_extension_map = {"text": ".txt", "binary": ".dat", "image": ".jpeg"}
     extension = file_extension_map.get(file_type, "_")
