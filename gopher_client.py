@@ -91,7 +91,7 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
 # given selector, item type, host and port, will return a string of the url to the resource
 # the returned url can be placed in the Floodgap url search bar for navigation
 def create_gopher_url(selector: str, item_type: str, host: str, port: int = 70) -> str:
-    return f"gopher://{host}:{port}/{item_type}{selector}"
+    return f"gopher://{OKBLUE}{host}{ENDC}:{port}/{item_type}{OKCYAN}{selector}{ENDC}"
 
 
 # used for the final print formatting to avoid overly long lines
@@ -412,19 +412,19 @@ if __name__ == "__main__":
     print(BOLD + "-" * 130)
     print(OKGREEN + f"Number of Text Files:{ENDC} {FAIL}{len(text_files)}" + ENDC)
     for i, file in enumerate(text_files, start=1):
-        print_wrapped(f"\t{i}) {OKCYAN}{file['url']}{ENDC}", 120)
+        print_wrapped(f"\t{i}) {file['url']}", 120)
 
     print(BOLD + "-" * 130)
     print(OKGREEN + f"Number of Binary Files:{ENDC} {FAIL}{len(binary_files)}" + ENDC)
     for i, file in enumerate(binary_files, start=1):
-        print(f"\t{i}) {OKCYAN}{file['url']}{ENDC}")
+        print(f"\t{i}) {file['url']}")
 
     print(BOLD + "=" * 130)
     print(BOLD + UNDERLINE + "File Size Information:" + ENDC)
     for category, file_info in FILE_SIZES.items():
         if file_info:
             print(
-                f"{category.replace('_', ' ').title()}: {OKCYAN}{file_info['url']}{ENDC} {OKGREEN}(Size: {file_info['size']} bytes){ENDC}"
+                f"{category.replace('_', ' ').title()}: {file_info['url']} {OKGREEN}(Size: {file_info['size']} bytes){ENDC}"
             )
         else:
             print(f"{category.replace('_', ' ').title()}: None")
