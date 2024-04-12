@@ -73,7 +73,7 @@ def connect_to_server(host: str, port: int) -> socket.socket:
 
 def send_request(selector: str, host: str, port: int) -> IO[Any]:
     socket = connect_to_server(host, port)
-    # debugging print - comment out if necessary
+    # debugging print 
     print(
         selector, "requested from", host, "on port", port, "-", datetime.datetime.now()
     )
@@ -320,6 +320,7 @@ def find_largest_and_smallest_files() -> None:
     # float inf is positive infinite, therefore, any number we find will reset it
     smallest_text_size = float("inf")
     smallest_binary_size = float("inf")
+    # -1 size initiation so first file will overwrite, then follow-on
     largest_text_size = -1
     largest_binary_size = -1
 
@@ -376,7 +377,7 @@ def main() -> None:
     parse_menu(web_page)
     # crawl gopher server
     web_crawler()
-
+    # determine largest/smallest resources
     find_largest_and_smallest_files()
     return None
 

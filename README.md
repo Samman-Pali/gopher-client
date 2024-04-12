@@ -38,7 +38,7 @@ In order to handle `Badly behaved pages` I had a collection of different approac
 
 `Godot` - As per the file description, this file never comes - therefore, this was easily handled by the timeout setting of the socket.
 
-In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as 0 in the event of a timeout or size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
+In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as 0 in the event of a timeout or max size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
 
 ---
 
