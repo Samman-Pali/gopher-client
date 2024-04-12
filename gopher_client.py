@@ -286,9 +286,9 @@ def download_file(
     # handles issues to do with txtfile termination, gopher server
     # seems to add its own newline following the text content then CRLF
     if file_type == "text":
-        text_response = response.decode('utf-8')
-        cleaned_response = text_response.rstrip('\n.\r\n')
-        response = cleaned_response.encode('utf-8')
+        text_response = response.decode("utf-8")
+        cleaned_response = text_response.rstrip("\n.\r\n")
+        response = cleaned_response.encode("utf-8")
 
     file_extension_map = {"text": ".txt", "binary": ".dat", "image": ".jpeg"}
     extension = file_extension_map.get(file_type, "_")
