@@ -2,7 +2,7 @@
 # @AUTHOR: U7287889 - Samman Palihapitiya
 
 import socket
-import os
+import os, sys
 import time
 from typing import Deque, Dict, List, Set, Union, Optional, IO, Any
 import datetime
@@ -72,20 +72,30 @@ def connect_to_server(host: str, port: int) -> socket.socket:
 
 
 def send_request(selector: str, host: str, port: int) -> IO[Any]:
-    socket = connect_to_server(host, port)
-    # debugging print 
-    print(
-        selector, "requested from", host, "on port", port, "-", datetime.datetime.now()
-    )
 
-    # create request with CRLF and send thru socket
-    request = selector + CRLF
-    socket.send(request)
+    req_attempts = 0
+    retries = 2
 
-    file = socket.makefile()
-    socket.close()
-    # response is returned as file
-    return file
+    while req_attempts < retries:
+        try:
+            socket = connect_to_server(host, port)
+            # debugging print 
+            print("\n")
+            print(selector, "requested from", host, "on port", port, "-", datetime.datetime.now())
+            # create request with CRLF and send thru socket
+            request = selector + CRLF
+            socket.send(request)
+
+            file = socket.makefile()
+            socket.close()
+            # response is returned as file
+            return file
+        except Exception as e:
+            # if request failed, try again - final attempt
+            print(f"{WARNING}Request attempt {req_attempts+1} failed with error: {e}{ENDC}")
+            req_attempts += 1
+    raise Exception(f"{FAIL}Max number of attempts reached, request failed.{ENDC}")
+
 
 
 # given selector, item type, host and port, will return a string of the url to the resource
@@ -93,6 +103,10 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
 def create_gopher_url(selector: str, item_type: str, host: str, port: int = 70) -> str:
     return f"gopher://{OKBLUE}{host}{ENDC}:{port}/{item_type}{OKCYAN}{selector}{ENDC}"
 
+# helps keep track of the amount of data downlaoded 
+def progress_bar(progress: int):
+    sys.stdout.write(f"\r{OKGREEN}Downloaded: {progress} bytes{ENDC}")
+    sys.stdout.flush()
 
 # used for the final print formatting to avoid overly long lines
 def print_wrapped(text: str, width: int):
@@ -240,8 +254,9 @@ def download_file(
     Downloads a file from the gopher server. Able to handle requests for download of jpegs, binaries and text files.
     Max file size limited to 1MB to prevent extremely large file downloads, timeout set to 10 seconds to avoid lengthy hangs.
     """
+    
     print(
-        "Retrieving",
+        "\nRetrieving",
         selector,
         "from",
         HOST,
@@ -267,7 +282,7 @@ def download_file(
     try:
         while bytes_received < max_size:
             if time.time() - start_time > timeout:
-                print(f"{WARNING}Timed out while retrieving {selector}.{ENDC}")
+                print(f"{WARNING}\nTimed out while retrieving {selector}.{ENDC}")
                 break
 
             file_components = socket_obj.recv(2048)
@@ -276,12 +291,19 @@ def download_file(
 
             response += file_components
             bytes_received += len(file_components)
-
+            progress_bar(bytes_received)
     except Exception as e:
         print(f"{FAIL}Error while retrieving {selector}: {e}{ENDC}")
+        # specify error type further 
+        if TimeoutError:
+            print(f"{FAIL}{socket_obj} has timed out.{ENDC}")
+        elif ConnectionError:
+            print(f"{FAIL}{socket_obj} faced a connection error.{ENDC}")
+
         if bytes_received == 0:
-            print(f"{WARNING}Sorry, no data received for {selector}.{ENDC}")
+            print(f"{WARNING}Sorry, no data received for {selector}. \U0001F641{ENDC}")
             return 0
+
         return None
     finally:
         socket_obj.close()
