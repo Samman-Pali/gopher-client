@@ -226,6 +226,9 @@ def parse_menu(file: IO[Any]) -> None:
                 if not info_text.startswith("invalid"):
                     message = f"{OKBLUE}Information:{ENDC} {info_text}"
                     INFO_MESSAGE.append(message)
+            else:
+                continue
+                # TODO: if server contains other resource types, handle appropriately.
     file.close()
     return None
 
@@ -359,7 +362,7 @@ def web_crawler() -> None:
 
         current_dir = DIR_TO_VISIT.popleft()
         if current_dir not in DIRS_VISITED:
-            # we know these are directories, so I've hardcoded the item type
+            # we know these are directories, so I've set the item type
             url = create_gopher_url(current_dir, "1", HOST, PORT)
             DIRS_VISITED[current_dir] = url
 
