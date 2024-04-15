@@ -58,9 +58,7 @@ In order to exclude text/binary files that resulted in an error or some overflow
 
 ![1712630563240](image/README/1712630563240.png)
 
-Shown above is a snippet of the initial TCP three-way handshake, followed by the response from the course gopher server. I've expanded the gopher response received in line 63 as it is pretty digestible and evident of containing the initial root directory's content. I've also dumped the gopher packets from wireshark into an excel sheet (`Wiresharkcket_Dump.xlsx`)
-
----
+Shown above is a snippet of the initial TCP three-way handshake, followed by the response from the course gopher server. I've expanded the gopher response received in line 63 as it is pretty digestible and evident of containing the initial root directory's content. 
 
 ### Requirements
 
