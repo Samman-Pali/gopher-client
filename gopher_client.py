@@ -81,7 +81,6 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
         try:
             socket = connect_to_server(host, port)
             # debugging print
-            print("\n")
             print(
                 selector,
                 "requested from",
@@ -268,7 +267,7 @@ def download_file(
     """
 
     print(
-        "\nRetrieving",
+        "Retrieving",
         selector,
         "from",
         HOST,
@@ -318,6 +317,7 @@ def download_file(
 
         return None
     finally:
+        print("\n")
         socket_obj.close()
 
     # handles issues to do with txtfile termination, gopher server
@@ -429,7 +429,6 @@ if __name__ == "__main__":
         resource for resource in GOPHER_RESOURCES if resource["type"] == BINARY
     ]
 
-    print("\n")
     print(BOLD + "=" * 130)
     print(BOLD + UNDERLINE + "Directory and File Count Information:" + ENDC)
     print(f"{OKGREEN}Number of Directories:{ENDC} {FAIL}{len(DIRS_VISITED)}{ENDC}")
