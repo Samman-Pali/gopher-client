@@ -1,4 +1,4 @@
-# COMP3310 Assignment 2 - Indexing a Gopher
+# COMP3310 Assignment 2 - Indexing a Gopher 🎉
 
 ## 2024 Semester 1 - U7287889 - Samman Palihapitiya
 
@@ -14,11 +14,11 @@ More on this at section 3.8 'Item type characters' found [here](https://www.rfc-
 
 ---
 
-### How to Execute:
+### How to Execute: 💻
 
 Ensure you have the latest python version.
 
-Navigate to the directory where you have saved the gopher-client in your terminal.
+Use your terminal to navigate to the directory where you have saved the gopher-client.
 
 Then execute:
 
@@ -26,9 +26,15 @@ Then execute:
 python gopher_client.py
 ```
 
+#### Output Samples:
+
+![1713167031966](image/README/1713167031966.png)
+
+![1713167042256](image/README/1713167042256.png)
+
 ---
 
-### Design Choices:
+### Design Choices: 👨‍🔧
 
 In order to handle `Badly behaved pages` I had a collection of different approaches:
 
@@ -38,11 +44,19 @@ In order to handle `Badly behaved pages` I had a collection of different approac
 
 `Godot` - As per the file description, this file never comes - therefore, this was easily handled by the timeout setting of the socket object.
 
+#### General:
+
 In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as 0 in the event of a timeout or max size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
+
+Each time a request is send, I've allowed "room for failure" in the sense that I re-attempt to send requests that fail through an execption handling processes. Again this is limited to only 2 attempts to keep the gopher client responsive and functional. Request fails have been uncommon so far during my implementation but I am aware that they do occur through connection loss.
+
+I've also utilised gopher URLs has complete paths - this is simply my interpretation of what a full path is in the context of the assignment as the URLs do provide the exact path to access the server's content using tools like FloodGap.
+
+With regards to performance of the indexer, my gopher client is as fast as the server allows given the limitations around sockets that need to timeout in order to handle the malformed/badly behaving resources. However, this is not confirmed using any emprirical method or a standard - just simply observations.
 
 ---
 
-### Known Limitations/Bugs:
+### Known Limitations/Bugs: 🤕
 
 * hard limit of size of file set to 0.5MB, potentially losing valuable information
 * hard limit to socket timeout, again can lead to losing valuable contents
@@ -54,11 +68,11 @@ In order to exclude text/binary files that resulted in an error or some overflow
 
 ---
 
-### Wireshark Response:
+### Wireshark Response: 🦈
 
 ![1712630563240](image/README/1712630563240.png)
 
-Shown above is a snippet of the initial TCP three-way handshake, followed by the response from the course gopher server. I've expanded the gopher response received in line 63 as it is pretty digestible and evident of containing the initial root directory's content. 
+Shown above is a snippet of the initial TCP three-way handshake, followed by the response from the course gopher server. I've expanded the gopher response received in line 63 as it is pretty digestible and evident of containing the initial root directory's content.
 
 ### Requirements
 

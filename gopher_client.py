@@ -82,11 +82,8 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
             socket = connect_to_server(host, port)
             # debugging print
             print(
-                selector,
-                "requested from",
-                host,
-                "on port",
-                port,
+                selector, "requested from",
+                host, "on port", port,
                 "-",
                 datetime.datetime.now(),
             )
