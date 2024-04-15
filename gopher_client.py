@@ -79,9 +79,17 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
     while req_attempts < retries:
         try:
             socket = connect_to_server(host, port)
-            # debugging print 
+            # debugging print
             print("\n")
-            print(selector, "requested from", host, "on port", port, "-", datetime.datetime.now())
+            print(
+                selector,
+                "requested from",
+                host,
+                "on port",
+                port,
+                "-",
+                datetime.datetime.now(),
+            )
             # create request with CRLF and send thru socket
             request = selector + CRLF
             socket.send(request)
@@ -92,10 +100,11 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
             return file
         except Exception as e:
             # if request failed, try again - final attempt
-            print(f"{WARNING}Request attempt {req_attempts+1} failed with error: {e}{ENDC}")
+            print(
+                f"{WARNING}Request attempt {req_attempts+1} failed with error: {e}{ENDC}"
+            )
             req_attempts += 1
     raise Exception(f"{FAIL}Max number of attempts reached, request failed.{ENDC}")
-
 
 
 # given selector, item type, host and port, will return a string of the url to the resource
@@ -103,10 +112,12 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
 def create_gopher_url(selector: str, item_type: str, host: str, port: int = 70) -> str:
     return f"gopher://{OKBLUE}{host}{ENDC}:{port}/{item_type}{OKCYAN}{selector}{ENDC}"
 
-# helps keep track of the amount of data downlaoded 
+
+# helps keep track of the amount of data downlaoded
 def progress_bar(progress: int):
     sys.stdout.write(f"\r{OKGREEN}Downloaded: {progress} bytes{ENDC}")
     sys.stdout.flush()
+
 
 # used for the final print formatting to avoid overly long lines
 def print_wrapped(text: str, width: int):
@@ -242,19 +253,19 @@ def parse_menu(file: IO[Any]) -> None:
                     INFO_MESSAGE.append(message)
             else:
                 continue
-                # TODO: if server contains other resource types, handle appropriately.
+                # TODO: if server contains other resource types, handle appropriately. Out of scope.
     file.close()
     return None
 
 
 def download_file(
-    selector: str, file_type: str, max_size: int = 1000000, timeout: int = 10
+    selector: str, file_type: str, max_size: int = 500000, timeout: int = 5
 ) -> int:
     """
     Downloads a file from the gopher server. Able to handle requests for download of jpegs, binaries and text files.
-    Max file size limited to 1MB to prevent extremely large file downloads, timeout set to 10 seconds to avoid lengthy hangs.
+    Max file size limited to 0.5MB to prevent extremely large file downloads, timeout set to 5 seconds to avoid lengthy hangs.
     """
-    
+
     print(
         "\nRetrieving",
         selector,
@@ -271,7 +282,7 @@ def download_file(
     selector = selector[:idx]
     request = str.encode(selector) + CRLF
     socket_obj = connect_to_server(HOST, PORT)
-    socket_obj.settimeout(10)
+    socket_obj.settimeout(5)
     socket_obj.send(request)
 
     # receive reponse of the file
@@ -294,7 +305,7 @@ def download_file(
             progress_bar(bytes_received)
     except Exception as e:
         print(f"{FAIL}Error while retrieving {selector}: {e}{ENDC}")
-        # specify error type further 
+        # specify error type further
         if TimeoutError:
             print(f"{FAIL}{socket_obj} has timed out.{ENDC}")
         elif ConnectionError:
@@ -417,6 +428,7 @@ if __name__ == "__main__":
         resource for resource in GOPHER_RESOURCES if resource["type"] == BINARY
     ]
 
+    print("\n")
     print(BOLD + "=" * 130)
     print(BOLD + UNDERLINE + "Directory and File Count Information:" + ENDC)
     print(f"{OKGREEN}Number of Directories:{ENDC} {FAIL}{len(DIRS_VISITED)}{ENDC}")
