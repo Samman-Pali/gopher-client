@@ -134,21 +134,21 @@ def handle_ex_refs(line: str) -> None:
 
     if len(parts) == 4:
         _, _, host, port = parts
-        message = f"Host: {host}, Port: {port}"
+        message = f"Host: {OKBLUE}{host}{ENDC}, Port: {OKBLUE}{port}{ENDC}"
         EX_REFS.add(message)
     else:
         message = (
-            f"MALFORMED LINE/EXTERN REF ---> Item Type: {item_type} -- {rest_of_line}"
+            f"Potentially Malformed Line: {WARNING}{rest_of_line}{ENDC}"
         )
         EX_REFS.add(message)
 
     return None
 
 
-def handle_inval_refs(line: str) -> None:
+def handle_inval_refs(line: str, selector: str) -> None:
     # records invalid references from gopher server lines, item type 3 issues.
     line = line[1:]  # exclude the type number
-    message = f"INVALID REF ---> {WARNING}{line}{ENDC}"
+    message = f"Invalid Reference from {OKCYAN}{selector}{ENDC}: {WARNING}{line}{ENDC}"
     INVAL_REFS.add(message)
     return None
 
@@ -183,7 +183,7 @@ def parse_file(line: str, file_type: str) -> None:
     return None
 
 
-def parse_menu(file: IO[Any]) -> None:
+def parse_menu(file: IO[Any], selector: str = '') -> None:
     """
     Prases the content of a gopher directory listing, extracting information about direcotires, text and binary files.
     Able to handle external references and error/invalid references. It updates global structures for directories to visit as well as
@@ -197,12 +197,12 @@ def parse_menu(file: IO[Any]) -> None:
     for line in file:
         line = line.strip()  # strip white space at front
         item_type = line[0]  # gopher item type is the first char
-
+        
         # process directories
         if item_type == DIRECTORY:
-
-            # exclude non-comp3310 related content -- bit tacky but seem to do the trick
-            if COURSE_TAG not in line:
+            
+            # process external references by looking for hosts and ports outside - tacky but works for this
+            if HOST not in line or str(PORT) not in line:
                 handle_ex_refs(line)
 
             start_index = line.find("/")
@@ -239,14 +239,14 @@ def parse_menu(file: IO[Any]) -> None:
 
         # process error lines
         elif item_type == ERROR:
-            handle_inval_refs(line)
+            handle_inval_refs(line, selector)
 
         else:
-            # handle information text
+            # handle information text, assumption: 'i' prefix in lines refer to information
             if item_type == INFORMATION:
                 info_text = line[1:].strip()
                 if not info_text.startswith("invalid"):
-                    message = f"{OKBLUE}Information:{ENDC} {info_text}"
+                    message = f"{OKBLUE}Information:{ENDC} {OKGREEN}{selector}{ENDC} {info_text}"
                     INFO_MESSAGE.append(message)
             else:
                 continue
@@ -300,6 +300,10 @@ def download_file(
             response += file_components
             bytes_received += len(file_components)
             progress_bar(bytes_received)
+
+            if bytes_received >= max_size:
+                print(f"\n{WARNING}Max file size reached - file capped at {max_size/1000000}MB{ENDC}")
+            
     except Exception as e:
         print(f"{FAIL}Error while retrieving {selector}: {e}{ENDC}")
         # specify error type further
@@ -401,14 +405,14 @@ def web_crawler() -> None:
             # grab page content
             web_page = send_request(selector, HOST, PORT)
             # perform processing - image, text, binary, directory
-            parse_menu(web_page)
+            parse_menu(web_page, selector)
     return None
 
 
 def main() -> None:
     # start from root directory - b''
     web_page = send_request(b"", HOST, PORT)
-    parse_menu(web_page)
+    parse_menu(web_page, '')
     # crawl gopher server
     web_crawler()
     # determine largest/smallest resources
@@ -433,7 +437,7 @@ if __name__ == "__main__":
     print(BOLD + "-" * 130)
     print(OKGREEN + f"Number of External References:{ENDC} {FAIL}{len(EX_REFS)}" + ENDC)
     for i, ref in enumerate(sorted(EX_REFS), start=1):
-        print(f"\t{i}) {OKCYAN}{ref}{ENDC}")
+        print(f"\t{i}) {ref}")
 
     print(BOLD + "-" * 130)
     print(

@@ -28,7 +28,7 @@ python gopher_client.py
 
 #### Output Samples:
 
-![1713167031966](image/README/1713167031966.png)
+![1713793850201](image/README/1713793850201.png)
 
 ![1713167042256](image/README/1713167042256.png)
 
@@ -54,6 +54,8 @@ I've also utilised gopher URLs has complete paths - this is simply my interpreta
 
 With regards to performance of the indexer, my gopher client is as fast as the server allows given the limitations around sockets that need to timeout in order to handle the malformed/badly behaving resources. However, this is not confirmed using any emprirical method or a standard - just simply observations.
 
+As an additional feature, I have interpretted the prefix 'i' to be informational messages stored throughout our target gopher server.
+
 ---
 
 ### Known Limitations/Bugs: 🤕
@@ -64,6 +66,7 @@ With regards to performance of the indexer, my gopher client is as fast as the s
 * external references are filtered simply based on whether a line response has the string: "comp3310", although, it works for our assignment envrionment and the course's gopher server - nothing is stopping someone from adding an external reference for which the phrase 'comp3310' is present as part of it's path or url.
 * vice versa, we could potentially misidentify external references which are part of the course's gopher server but is located elsewhere -> leads back to how we define external references.
 * invalid references are not handled but simply dumped as lines -> hard to digest and trace
+  * note that I have interpretted these to be unique "lines" returned by the gopher sever, not directory or files - this essentially meant checking if a given line response contains the error prefix (3).
 * Since I've set the timeout to 5 seconds and max size to 0.5MB the crawling is slower than it could be - in order to improve this speed we can reduce the timeout buffer and the max size as needed.
 
 ---
