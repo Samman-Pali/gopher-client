@@ -168,6 +168,10 @@ def parse_file(line: str, file_type: str) -> None:
     # download the file and get its size
     size = download_file(file_directory, file_type)
 
+    if size is None:
+        print(f"{FAIL}Failed to download file, Skipping addition to resources: {file_directory}{ENDC}")
+        return
+
     # removes the trailing /t following selector/path
     inval_index = file_directory.find("\t")
     file_directory = file_directory[:inval_index]
@@ -290,8 +294,7 @@ def download_file(
     try:
         while bytes_received < max_size:
             if time.time() - start_time > timeout:
-                print(f"{WARNING}\nTimed out while retrieving {selector}.{ENDC}")
-                break
+                raise TimeoutError
 
             file_components = socket_obj.recv(2048)
             if not file_components:
@@ -303,19 +306,14 @@ def download_file(
 
             if bytes_received >= max_size:
                 print(f"\n{WARNING}Max file size reached - file capped at {max_size/1000000}MB{ENDC}")
-            
+                return None
+    
     except Exception as e:
-        print(f"{FAIL}Error while retrieving {selector}: {e}{ENDC}")
-        # specify error type further
         if TimeoutError:
-            print(f"{FAIL}{socket_obj} has timed out.{ENDC}")
-        elif ConnectionError:
-            print(f"{FAIL}{socket_obj} faced a connection error.{ENDC}")
-
+            print(f"{WARNING}\nTimed out while retrieving {selector}.{ENDC}")
         if bytes_received == 0:
             print(f"{WARNING}Sorry, no data received for {selector}. \U0001F641{ENDC}")
-            return 0
-
+            
         return None
     finally:
         print("\n")
@@ -323,7 +321,7 @@ def download_file(
 
     # handles issues to do with txtfile termination, gopher server
     # seems to add its own newline following the text content then CRLF
-    if file_type == "text":
+    if file_type in ["text", "binary"]:
         text_response = response.decode("utf-8")
         cleaned_response = text_response.rstrip("\n.\r\n")
         response = cleaned_response.encode("utf-8")

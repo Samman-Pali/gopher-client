@@ -46,7 +46,7 @@ In order to handle `Badly behaved pages` I had a collection of different approac
 
 #### General:
 
-In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as 0 in the event of a timeout or max size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
+In order to exclude text/binary files that resulted in an error or some overflow, I've decided to return size as `None` in the event of a timeout or max size being exceeded. By doing so, I am able to exclude them in the comparison done in `find_largest_and_smallest_files()` function.
 
 Each time a request is send, I've allowed "room for failure" in the sense that I re-attempt to send requests that fail through an execption handling processes. Again this is limited to only 2 attempts to keep the gopher client responsive and functional. Request fails have been uncommon so far during my implementation but I am aware that they do occur through connection loss.
 
@@ -63,11 +63,34 @@ As an additional feature, I have interpretted the prefix 'i' to be informational
 * hard limit of size of file set to 0.5MB, potentially losing valuable information
 * hard limit to socket timeout, again can lead to losing valuable contents
 * processing is explicit for directories, images, binary or text files - meaning other files are not handled as well
-* external references are filtered simply based on whether a line response has the string: "comp3310", although, it works for our assignment envrionment and the course's gopher server - nothing is stopping someone from adding an external reference for which the phrase 'comp3310' is present as part of it's path or url.
+* external references are filtered simply based on whether a line response has the string: host or port in it, although, it works for our assignment envrionment and the course's gopher server - nothing is stopping someone from adding an external reference for which our host or the number 70 is present as part of it's path or url. This would cause it to bypass our check.
+  * ```
+    if HOST not in line or str(PORT) not in line:
+                    handle_ex_refs(line)
+    ```
 * vice versa, we could potentially misidentify external references which are part of the course's gopher server but is located elsewhere -> leads back to how we define external references.
 * invalid references are not handled but simply dumped as lines -> hard to digest and trace
   * note that I have interpretted these to be unique "lines" returned by the gopher sever, not directory or files - this essentially meant checking if a given line response contains the error prefix (3).
 * Since I've set the timeout to 5 seconds and max size to 0.5MB the crawling is slower than it could be - in order to improve this speed we can reduce the timeout buffer and the max size as needed.
+
+---
+
+### `comp3310.ddns.net` index stats:
+
+| Count Information               |
+| -------------------------------- |
+| Number of Directories: 41        |
+| Number of External References: 3 |
+| Number of Invalid References: 5  |
+| Number of Text Files: 12         |
+| Number of Binary Files: 2        |
+
+| File/Group                                           | Size (bytes) |
+| ---------------------------------------------------- | ------------ |
+| Smallest Text File<br />`/misc/empty.txt`          | 0            |
+| Largest Text File<br />`/rfc1436.txt`              | 37391        |
+| Smallest Binary File<br />`/misc/binary`           | 251          |
+| Largest Binary Files<br />`/misc/encabulator.jpeg` | 45584        |
 
 ---
 
