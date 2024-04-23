@@ -83,8 +83,11 @@ def send_request(selector: str, host: str, port: int) -> IO[Any]:
             socket = connect_to_server(host, port)
             # debugging print
             print(
-                selector, "requested from",
-                host, "on port", port,
+                selector,
+                "requested from",
+                host,
+                "on port",
+                port,
                 "-",
                 datetime.datetime.now(),
             )
@@ -138,9 +141,7 @@ def handle_ex_refs(line: str) -> None:
         message = f"Host: {OKBLUE}{host}{ENDC}, Port: {OKBLUE}{port}{ENDC}"
         EX_REFS.add(message)
     else:
-        message = (
-            f"Potentially Malformed Line: {WARNING}{rest_of_line}{ENDC}"
-        )
+        message = f"Potentially Malformed Line: {WARNING}{rest_of_line}{ENDC}"
         EX_REFS.add(message)
 
     return None
@@ -170,7 +171,9 @@ def parse_file(line: str, file_type: str) -> None:
     size = download_file(file_directory, file_type)
 
     if size is None:
-        print(f"{LINEUP}{FAIL}File excluded, Skipping addition to resources: {file_directory}{ENDC}{ENDC}\n")
+        print(
+            f"{LINEUP}{FAIL}File excluded, Skipping addition to resources: {file_directory}{ENDC}{ENDC}\n"
+        )
         return
 
     # removes the trailing /t following selector/path
@@ -188,7 +191,7 @@ def parse_file(line: str, file_type: str) -> None:
     return None
 
 
-def parse_menu(file: IO[Any], selector: str = '') -> None:
+def parse_menu(file: IO[Any], selector: str = "") -> None:
     """
     Prases the content of a gopher directory listing, extracting information about direcotires, text and binary files.
     Able to handle external references and error/invalid references. It updates global structures for directories to visit as well as
@@ -202,10 +205,10 @@ def parse_menu(file: IO[Any], selector: str = '') -> None:
     for line in file:
         line = line.strip()  # strip white space at front
         item_type = line[0]  # gopher item type is the first char
-        
+
         # process directories
         if item_type == DIRECTORY:
-            
+
             # process external references by looking for hosts and ports outside - tacky but works for this
             if HOST not in line or str(PORT) not in line:
                 handle_ex_refs(line)
@@ -306,15 +309,17 @@ def download_file(
             progress_bar(bytes_received)
 
             if bytes_received >= max_size:
-                print(f"\n{WARNING}Max file size reached - file capped at {max_size/1000000}MB{ENDC}")
+                print(
+                    f"\n{WARNING}Max file size reached - file capped at {max_size/1000000}MB{ENDC}"
+                )
                 return None
-    
+
     except Exception as e:
         if TimeoutError:
             print(f"{WARNING}\nTimed out while retrieving {selector}.{ENDC}")
         if bytes_received == 0:
             print(f"{WARNING}Sorry, no data received for {selector}. \U0001F641{ENDC}")
-            
+
         return None
     finally:
         print("\n")
@@ -411,7 +416,7 @@ def web_crawler() -> None:
 def main() -> None:
     # start from root directory - b''
     web_page = send_request(b"", HOST, PORT)
-    parse_menu(web_page, '')
+    parse_menu(web_page, "")
     # crawl gopher server
     web_crawler()
     # determine largest/smallest resources
