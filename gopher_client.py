@@ -18,6 +18,7 @@ WARNING: str = "\033[93m"
 FAIL: str = "\033[91m"
 ENDC: str = "\033[0m"
 BOLD: str = "\033[1m"
+LINEUP: str = "\033[A\033[A"
 UNDERLINE: str = "\033[4m"
 
 HOST: str = "comp3310.ddns.net"
@@ -169,7 +170,7 @@ def parse_file(line: str, file_type: str) -> None:
     size = download_file(file_directory, file_type)
 
     if size is None:
-        print(f"{FAIL}Failed to download file, Skipping addition to resources: {file_directory}{ENDC}")
+        print(f"{LINEUP}{FAIL}File excluded, Skipping addition to resources: {file_directory}{ENDC}{ENDC}\n")
         return
 
     # removes the trailing /t following selector/path
