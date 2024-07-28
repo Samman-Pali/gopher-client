@@ -1,6 +1,6 @@
-# COMP3310 Indexing a Gopher 🎉
+# COMP3310 Assignment 2 - Indexing a Gopher 🎉
 
-## Work of Samman Palihapitiya
+## 2024 Semester 1 - Samman Palihapitiya
 
 > For this assignment, you need to write your own gopher client in C, Java or Python. The client will need to 'spider' or 'crawl' or 'index' a specified server, do some simple analysis and reporting of waht resources are there, as well as detect, report and deal with any issues with the server or its content.
 
